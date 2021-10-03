@@ -1,7 +1,7 @@
-const contactsOperations = require('../../model/contacts/contactsOperations')
+const { Contact } = require('../../schemas')
 
 const listContacts = async (req, res, next) => {
-  const contacts = await contactsOperations.listContacts()
+  const contacts = await Contact.find({})
   res.json({
     status: 'success',
     code: 200,
@@ -11,7 +11,7 @@ const listContacts = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   const { contactId } = req.params
-  const contact = await contactsOperations.getById(Number(contactId))
+  const contact = await Contact.findById(contactId)
   if (!contact) {
     res.status(404).json({
       status: 'error',
@@ -29,7 +29,7 @@ const getById = async (req, res, next) => {
 }
 
 const add = async (req, res, next) => {
-  const result = await contactsOperations.addContact(req.body)
+  const result = await Contact.create(req.body)
   res.status(201).json({
     status: 'successfully created',
     code: 201,
@@ -39,7 +39,7 @@ const add = async (req, res, next) => {
 
 const updateById = async (req, res, next) => {
   const { contactId } = req.params
-  const result = await contactsOperations.updateContact(Number(contactId), req.body)
+  const result = await Contact.updateOne({ _id: contactId }, { ...req.body })
   if (!result) {
     res.status(404).json({
       status: 'error',
@@ -57,7 +57,7 @@ const updateById = async (req, res, next) => {
 
 const removeById = async (req, res, next) => {
   const { contactId } = req.params
-  const contact = await contactsOperations.removeContact(Number(contactId))
+  const contact = await Contact.deleteOne({ _id: contactId })
   if (!contact) {
     res.status(404).json({
       status: 'error',
@@ -73,11 +73,36 @@ const removeById = async (req, res, next) => {
     })
 }
 
+const updateStatusContactById = async (req, res, next) => {
+  if (req.body.favorite === undefined) {
+    res.status(400).json({
+      status: 'error',
+      code: 404,
+      message: 'missing field favorite'
+    })
+    return
+  }
+  const { contactId } = req.params
+  const result = await Contact.findByIdAndUpdate(contactId, { ...req.body })
+  if (!result) {
+    res.status(404).json({
+      status: 'error',
+      code: 404,
+      message: `Contact with id ${contactId} not found`
+    })
+    return
+  }
+  res.json({
+    status: 'successfuly updated',
+    code: 202
+  })
+}
+
 module.exports = {
   listContacts,
   getById,
   add,
   updateById,
-  removeById
-
+  removeById,
+  updateStatusContactById
 }
