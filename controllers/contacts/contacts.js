@@ -29,7 +29,7 @@ const getById = async (req, res, next) => {
 }
 
 const add = async (req, res, next) => {
-  const result = await Contact.create(req.body)
+  const result = await Contact.create(req.body, req.body.favorite = false)
   res.status(201).json({
     status: 'successfully created',
     code: 201,
