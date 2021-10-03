@@ -28,7 +28,8 @@ const contactSchema = Schema({
     type: Boolean,
     default: false
   }
-})
+},
+{ versionKey: false, timestamps: true },)
 
 const joiSchema = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).required(),
