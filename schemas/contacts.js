@@ -35,7 +35,7 @@ const joiSchema = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).required(),
   email: Joi.string().email(emailRegex).required(),
   phone: Joi.string().pattern(phoneRegex).required(),
-  favorite: Joi.bool().default(false),
+  favorite: Joi.bool(),
 })
 
 const Contact = model('contact', contactSchema)

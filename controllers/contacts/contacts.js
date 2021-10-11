@@ -29,7 +29,7 @@ const getById = async (req, res, next) => {
 }
 
 const add = async (req, res, next) => {
-  const result = await Contact.create(req.body, req.body.favorite = false)
+  const result = await Contact.create(req.body)
   res.status(201).json({
     status: 'successfully created',
     code: 201,
@@ -39,7 +39,7 @@ const add = async (req, res, next) => {
 
 const updateById = async (req, res, next) => {
   const { contactId } = req.params
-  const result = await Contact.updateOne({ _id: contactId }, { ...req.body })
+  const result = await Contact.findByIdAndUpdate(contactId, req.body)
   if (!result) {
     res.status(404).json({
       status: 'error',
@@ -57,7 +57,7 @@ const updateById = async (req, res, next) => {
 
 const removeById = async (req, res, next) => {
   const { contactId } = req.params
-  const contact = await Contact.deleteOne({ _id: contactId })
+  const contact = await Contact.findByIdAndRemove(contactId)
   if (!contact) {
     res.status(404).json({
       status: 'error',
@@ -73,7 +73,7 @@ const removeById = async (req, res, next) => {
     })
 }
 
-const updateStatusContactById = async (req, res, next) => {
+const updateStatusContactById = async (req, res) => {
   if (req.body.favorite === undefined) {
     res.status(400).json({
       status: 'error',
@@ -83,7 +83,7 @@ const updateStatusContactById = async (req, res, next) => {
     return
   }
   const { contactId } = req.params
-  const result = await Contact.findByIdAndUpdate(contactId, { ...req.body })
+  const result = await Contact.findByIdAndUpdate(contactId, req.body)
   if (!result) {
     res.status(404).json({
       status: 'error',
