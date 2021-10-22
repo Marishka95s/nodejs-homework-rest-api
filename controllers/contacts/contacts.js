@@ -1,11 +1,16 @@
 const { Contact } = require('../../schemas')
 
 const listContacts = async (req, res, next) => {
-  const contacts = await Contact.find({})
+  const { page = 1, limit = 5, favorite = true } = req.query
+  const skip = (page - 1) * limit
+  const { _id } = req.user
+  const contacts = await Contact.find({ owner: _id, favorite }, '_id name phone owner', { skip, limit: +limit }).populate('owner', 'email')
   res.json({
     status: 'success',
     code: 200,
-    contacts
+    data: {
+      contacts
+    }
   })
 }
 
@@ -29,11 +34,15 @@ const getById = async (req, res, next) => {
 }
 
 const add = async (req, res, next) => {
-  const result = await Contact.create(req.body)
+  const { user } = req
+  const newContact = { ...req.body, owner: user._id }
+  const result = await Contact.create(newContact)
   res.status(201).json({
     status: 'successfully created',
     code: 201,
-    result
+    data: {
+      result
+    }
   })
 }
 

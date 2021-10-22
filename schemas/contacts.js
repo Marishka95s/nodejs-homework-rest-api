@@ -27,12 +27,16 @@ const contactSchema = Schema({
   favorite: {
     type: Boolean,
     default: false
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
   }
 },
 { versionKey: false, timestamps: true },)
 
 const joiSchema = Joi.object({
-  name: Joi.string().alphanum().min(3).max(30).required(),
+  name: Joi.string().alphanum().min(3).required(),
   email: Joi.string().email(emailRegex).required(),
   phone: Joi.string().pattern(phoneRegex).required(),
   favorite: Joi.bool(),

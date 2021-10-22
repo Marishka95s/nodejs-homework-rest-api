@@ -1,21 +1,21 @@
 const express = require('express')
 
-const { controllerWrapper, validator } = require('../../middelwares')
+const { controllerWrapper, validator, authenticate } = require('../../middelwares')
 const { contacts: ctrl } = require('../../controllers')
 const { joiSchema } = require('../../schemas/contacts')
 
 const router = express.Router()
 
-router.get('/', controllerWrapper(ctrl.listContacts))
+router.get('/', authenticate, controllerWrapper(ctrl.listContacts))
 
-router.get('/:contactId', controllerWrapper(ctrl.getById))
+router.get('/:contactId', authenticate, controllerWrapper(ctrl.getById))
 
-router.post('/', validator(joiSchema), controllerWrapper(ctrl.add))
+router.post('/', authenticate, validator(joiSchema), controllerWrapper(ctrl.add))
 
-router.delete('/:contactId', controllerWrapper(ctrl.removeById))
+router.delete('/:contactId', authenticate, controllerWrapper(ctrl.removeById))
 
-router.put('/:contactId', validator(joiSchema), controllerWrapper(ctrl.updateById))
+router.put('/:contactId', authenticate, validator(joiSchema), controllerWrapper(ctrl.updateById))
 
-router.patch('/:contactId/favorite', controllerWrapper(ctrl.updateStatusContactById))
+router.patch('/:contactId/favorite', authenticate, controllerWrapper(ctrl.updateStatusContactById))
 
 module.exports = router
