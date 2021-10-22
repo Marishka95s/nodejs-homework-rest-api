@@ -13,6 +13,7 @@ const register = async (req, res) => {
   }
   const { email, password } = req.body
   const user = await User.findOne({ email })
+
   if (user) {
     throw new Conflict('Email in use')
     // res.status(409).json({
@@ -36,9 +37,6 @@ const register = async (req, res) => {
     code: 201,
     message: 'Registred success',
     result
-    // data: {
-    //   token
-    // }
   })
 }
 

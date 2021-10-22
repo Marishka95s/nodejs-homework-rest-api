@@ -4,7 +4,7 @@ const validator = (schema) => {
     if (error) {
       res.status(400).json({
         status: 'error',
-        code: 404,
+        code: 400,
         message: error.message
       })
       return
