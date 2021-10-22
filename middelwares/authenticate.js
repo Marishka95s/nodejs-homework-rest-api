@@ -1,6 +1,7 @@
-const { User } = require('../schemas')
 const jwt = require('jsonwebtoken')
 const { Unauthorized } = require('http-errors')
+
+const { User } = require('../schemas')
 
 const { SECRET_KEY } = process.env
 
