@@ -1,6 +1,7 @@
 const { Conflict } = require('http-errors')
 // const bcrypt = require('bcryptjs')
 const { User } = require('../../schemas')
+const gravatar = require('gravatar')
 
 const register = async (req, res) => {
   if (req.body.email === null || req.body.password === null) {
@@ -23,7 +24,8 @@ const register = async (req, res) => {
     // })
     // return
   }
-  const newUser = new User({ email })
+  const avatarURL = gravatar.url(email)
+  const newUser = new User({ email, avatarURL })
   // newUser = { email }
   newUser.setPassword(password)
   // newUser = { email, password }
