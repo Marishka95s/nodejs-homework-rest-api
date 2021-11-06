@@ -1,7 +1,9 @@
 const { Conflict } = require('http-errors')
-// const bcrypt = require('bcryptjs')
-const { User } = require('../../schemas')
 const gravatar = require('gravatar')
+const { nanoid } = require('nanoid')
+
+const { User } = require('../../schemas')
+const { sendEmail } = require('../../helpers')
 
 const register = async (req, res) => {
   if (req.body.email === null || req.body.password === null) {
@@ -17,19 +19,21 @@ const register = async (req, res) => {
 
   if (user) {
     throw new Conflict('Email in use')
-    // res.status(409).json({
-    //   status: 'error',
-    //   code: 409,
-    //   message: 'Email in use'
-    // })
-    // return
   }
   const avatarURL = gravatar.url(email)
-  const newUser = new User({ email, avatarURL })
-  // newUser = { email }
+  const verificationToken = nanoid()
+
+  const newUser = new User({ email, avatarURL, verificationToken })
   newUser.setPassword(password)
-  // newUser = { email, password }
+
   const result = await newUser.save()
+
+  const registrationMail = {
+    to: email,
+    subject: 'Registration confirm',
+    html: `<a href = "http://localhost:3000/api/users/verify/${verificationToken}">Click it to confirm a registration</a>`
+  }
+  sendEmail(registrationMail)
 
   //   const hashPasword = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
   //   await User.create({ email, password: hashPasword })
